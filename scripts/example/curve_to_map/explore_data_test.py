@@ -222,7 +222,7 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
         TotCapFlowFit = CurveFit(
             x=df_rated_T["ff"].values,
             targets=df_rated_T["cap_f_t"].values,
-            fun="cubic"
+            fun="bi-quad"
         )
         # print("Curve Fitting for Case II")
         TotCapFlowFit.fit()
@@ -234,37 +234,37 @@ if __name__ == "__main__":
     sheet_ind = "Table 1"
     num_comp_sequences = 1
     flow_rate = 2100
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    # run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
 
 
-    # DX = DXPerfMap(xlsx_file=xlsx_file, sheet_ind=sheet_ind,
-    #                 rated_flow_rate=flow_rate,comp_sequences=num_comp_sequences)
-    # plot(xlsx_file, sheet_ind)
-    # #test ff
-    # for nc in range(num_comp_sequences):
-    #     if num_comp_sequences == 1:
-    #         df_rated_flow = DX.df_rated_flow
-    #     else:
-    #         df_rated_flow = DX.df_rated_flow[f"comp_seq_{nc+1}"]
-    #     TotCapTFit = CurveFit(
-    #         x=df_rated_flow["outdoor_coil_entering_dry_bulb_temperature"].values,
-    #         targets=df_rated_flow["cap_f_t"].values,
-    #         y=df_rated_flow["indoor_coil_entering_wet_bulb_temperature"].values
-    #     )
-    #     #print("Curve fitting for Case I")
-    #     TotCapTFit.fit()
-    #     TotCapTFit.plot(file_str=f"TotCapFlowTempFit_seq_{nc+1}", sheet_ind=DX.sheet_ind)
+    DX = DXPerfMap(xlsx_file=xlsx_file, sheet_ind=sheet_ind,
+                    rated_flow_rate=flow_rate,comp_sequences=num_comp_sequences)
+    plot(xlsx_file, sheet_ind)
+    #test ff
+    for nc in range(num_comp_sequences):
+        if num_comp_sequences == 1:
+            df_rated_flow = DX.df_rated_flow
+        else:
+            df_rated_flow = DX.df_rated_flow[f"comp_seq_{nc+1}"]
+        TotCapTFit = CurveFit(
+            x=df_rated_flow["outdoor_coil_entering_dry_bulb_temperature"].values,
+            targets=df_rated_flow["cap_f_t"].values,
+            y=df_rated_flow["indoor_coil_entering_wet_bulb_temperature"].values
+        )
+        #print("Curve fitting for Case I")
+        TotCapTFit.fit()
+        TotCapTFit.plot(file_str=f"TotCapFlowTempFit_seq_{nc+1}", sheet_ind=DX.sheet_ind)
 
-    #     # ####New Curve fit objects
-    #     if num_comp_sequences == 1:
-    #         df_rated_T = DX.df_rated_T
-    #     else:
-    #         df_rated_T = DX.df_rated_T[f"comp_seq_{nc+1}"]
-    #     TotCapFlowFit = CurveFit(
-    #         x=df_rated_T["ff"].values,
-    #         targets=df_rated_T["cap_f_t"].values,
-    #         fun="cubic"
-    #     )
-    #     # print("Curve Fitting for Case II")
-    #     TotCapFlowFit.fit()
-    #     TotCapFlowFit.plot(file_str=f"TotCapFlowFit_seq_{nc+1}", sheet_ind=DX.sheet_ind, label="Cap-f-ff")
+        # ####New Curve fit objects
+        if num_comp_sequences == 1:
+            df_rated_T = DX.df_rated_T
+        else:
+            df_rated_T = DX.df_rated_T[f"comp_seq_{nc+1}"]
+        TotCapFlowFit = CurveFit(
+            x=df_rated_T["ff"].values,
+            targets=df_rated_T["cap_f_t"].values,
+            fun="cubic"
+        )
+        # print("Curve Fitting for Case II")
+        TotCapFlowFit.fit()
+        TotCapFlowFit.plot(file_str=f"TotCapFlowFit_seq_{nc+1}", sheet_ind=DX.sheet_ind, label="Cap-f-ff")

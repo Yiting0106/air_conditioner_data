@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import json
 
 
 class DXPerfMap:
@@ -209,7 +210,16 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
     DX = DXPerfMap(xlsx_file=xlsx_file, sheet_ind=sheet_ind,
                     rated_flow_rate=flow_rate,comp_sequences=num_comp_sequences)
     plot(xlsx_file, sheet_ind)
+
+    equip_data = {'equip_label': xlsx_file[46:-5]+sheet_ind[-1],
+                  'num_comp_sequences': num_comp_sequences,
+                  'flow_rate': flow_rate,
+                  'Te_db': DX.Te_db,
+                  'Te_wb': DX.Te_wb,
+                  'rated_capacity': DX.rated_capacity
+                  }
     #test ff
+    curve_set_data = []
     for nc in range(num_comp_sequences):
         if num_comp_sequences == 1:
             df_rated_flow = DX.df_rated_flow
@@ -221,7 +231,37 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
             y=df_rated_flow["indoor_coil_entering_wet_bulb_temperature"].values
         )
         #print("Curve fitting for Case I")
-        TotCapTFit.fit()
+        coef_case1 = TotCapTFit.fit()
+        case1_data = {"num_comp_seq": nc,
+        "cap-f-t": {
+            "out_var": "cap-f-t",
+            "type": "bi_quad",
+        #    "ref_evap_fluid_flow": null,
+        #    "ref_cond_fluid_flow": null,
+        #    "ref_lwt": 6.67,
+        #    "ref_ect": 35.0,
+        #    "ref_lct": null,
+            "units": "si",
+            "x_min": df_rated_flow["outdoor_coil_entering_dry_bulb_temperature"].values.min(),
+            "y_min": df_rated_flow["indoor_coil_entering_wet_bulb_temperature"].values.min(),
+            "x_max": df_rated_flow["outdoor_coil_entering_dry_bulb_temperature"].values.max(),
+            "y_max": df_rated_flow["indoor_coil_entering_wet_bulb_temperature"].values.max(),
+            "out_min": df_rated_flow["cap_f_t"].values.min(),
+            "out_max": df_rated_flow["cap_f_t"].values.max(),
+            "coeff1": coef_case1[0],
+            "coeff2": coef_case1[1],
+            "coeff3": coef_case1[2],
+            "coeff4": coef_case1[3],
+            "coeff5": 0.0,
+            "coeff6": 0.0,
+            "coeff7": 0.0,
+            "coeff8": 0.0,
+            "coeff9": 0.0,
+            "coeff10": 0.0
+            }
+        }
+        curve_set_data.append(case1_data)
+        print(f"coefficients for Case I: {coef_case1}")
         TotCapTFit.plot(file_str=f"TotCapFlowTempFit_seq_{nc+1}", sheet_ind=DX.sheet_ind)
 
         # ####New Curve fit objects
@@ -235,66 +275,105 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
             fun="cubic"
         )
         # print("Curve Fitting for Case II")
-        TotCapFlowFit.fit()
+        coef_case2 = TotCapFlowFit.fit()
+        case2_data = {"num_comp_seq": nc,
+        "cap-f-ff": {
+            "out_var": "cap-f-ff",
+            "type": "cubic",
+        #    "ref_evap_fluid_flow": null,
+        #    "ref_cond_fluid_flow": null,
+        #    "ref_lwt": 6.67,
+        #    "ref_ect": 35.0,
+        #    "ref_lct": null,
+            "units": "si",
+            "x_min": df_rated_T["ff"].values.min(),
+            "x_max": df_rated_T["ff"].values.max(),
+            "out_min": df_rated_T["cap_f_t"].values.min(),
+            "out_max": df_rated_T["cap_f_t"].values.max(),
+            "coeff1": coef_case2[0],
+            "coeff2": coef_case2[1],
+            "coeff3": coef_case2[2],
+            "coeff4": coef_case2[3],
+            "coeff5": 0.0,
+            "coeff6": 0.0,
+            "coeff7": 0.0,
+            "coeff8": 0.0,
+            "coeff9": 0.0,
+            "coeff10": 0.0
+            }
+        }
+        curve_set_data.append(case2_data)
+        print(f"coefficients for Case II: {coef_case2}")
         TotCapFlowFit.plot(file_str=f"TotCapFlowFit_seq_{nc+1}", sheet_ind=DX.sheet_ind, label="Cap-f-ff")
+    print(f"{xlsx_file}{sheet_ind} ran succefully.")
 
-    print(f"{xlsx_file}{sheet_ind} runned succefully.")
-
-    return
+    # Create a new dictionary with the list under one key
+    set_of_curves = {"set_of_curves": curve_set_data}
+    equip_data.update(set_of_curves)
+    # Convert the updated dictionary to a JSON string
+    json_data = json.dumps(equip_data, indent=4)
+    return json_data
 
 if __name__ == "__main__":
 
     ### 1. DX_Equipment_Data_Collection_D.xlsx
     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_D.xlsx"
-
+    json_list = []
     ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
         # Table 1
     sheet_ind = "Table 1"
     num_comp_sequences = 1 # 1 compressor
     flow_rate = 2100
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j1d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j1d)
 
         # Table 2
     sheet_ind = "Table 2"
     num_comp_sequences = 1 # 2 compressors
     flow_rate = 3000
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j2d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j2d)
 
         # Table 3
     sheet_ind = "Table 3"
     num_comp_sequences = 1 # 2 compressors
     flow_rate = 3400
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j3d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j3d)
 
         # Table 4
     sheet_ind = "Table 4"
     num_comp_sequences = 1 # 2 compressors
     flow_rate = 4000
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j4d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j4d)
 
         # Table 5
     sheet_ind = "Table 5"
     num_comp_sequences = 1 # 2 compressors
     flow_rate = 5000
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j5d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j5d)
 
         # Table 6
     sheet_ind = "Table 6"
     num_comp_sequences = 1 # 3 compressors
     flow_rate = 5010
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    j6d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j6d)
 
         # Table 7
     sheet_ind = "Table 7"
     num_comp_sequences = 1 # 4 compressors
     flow_rate = 6475
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)    
+    j7d = run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    json_list.append(j7d)
 
-        # Table 8
-    sheet_ind = "Table 8"
-    num_comp_sequences = 1 # 5 compressors
-    flow_rate = 8250
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    #     # Table 8
+    # sheet_ind = "Table 8"
+    # num_comp_sequences = 1 # 5 compressors
+    # flow_rate = 8250
+    # j8d =run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
 
 # ### 2. DX_Equipment_Data_Collection_L.xlsx
 #     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_L.xlsx"
@@ -307,12 +386,18 @@ if __name__ == "__main__":
 #     run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
 
 ### 3. DX_Equipment_Data_Collection_C_SM.xlsx
-    xlsx_file = "./data/processed/DX_Equipment_Data_Collection_C_SM.xlsx"
+    # xlsx_file = "./data/processed/DX_Equipment_Data_Collection_C_SM.xlsx"
 
-    ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
-        # Table 1
-    sheet_ind = "Table 1"
-    num_comp_sequences = 1 # 1 compressor
-    flow_rate = 2100
-    run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
+    # ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
+    #     # Table 1
+    # sheet_ind = "Table 1"
+    # num_comp_sequences = 1 # 1 compressor
+    # flow_rate = 2100
+    # run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate)
 
+    # Specify the filename
+    filename = 'DX_cfm.json'
+
+    # Write the list of dictionaries to a JSON file
+    with open(filename, 'w') as file:
+        json.dump(json_list, file, indent=4)
