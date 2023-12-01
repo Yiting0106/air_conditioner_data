@@ -223,6 +223,13 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,rated_To_db):
                   'Te_db': DX.Te_db,
                   'Te_wb': DX.Te_wb,
                   'rated_capacity': DX.rated_capacity
+
+                  # To Do ? :
+                  # 'OAT': 'outdoor_coil_entering_dry_bulb_temperature'
+                  # 'gross_sensible_capacity'
+                  # 'gross_power'
+                  # 'indoor_coil_air_mass_flow_rate'
+                  # 'supply_fan_power'
                   }
     #test ff
     curve_set_data = []
@@ -323,120 +330,143 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,rated_To_db):
 
 if __name__ == "__main__":
 
-#     ### 1. DX_Equipment_Data_Collection_D.xlsx
-#     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_D.xlsx"
+    json_list = []
 
-#     ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
+    ### 1. DX_Equipment_Data_Collection_D.xlsx
+    xlsx_file = "./data/processed/DX_Equipment_Data_Collection_D.xlsx"
+
+    ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
     
-#         # Table 1
-#     sheet_ind = "Table 1"
-#     num_comp_sequences = 1 # 1 compressor
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 1
+    sheet_ind = "Table 1"
+    num_comp_sequences = 1 # 1 compressor
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 2
-#     sheet_ind = "Table 2"
-#     num_comp_sequences = 1 # 2 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 2
+    sheet_ind = "Table 2"
+    num_comp_sequences = 1 # 2 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 3
-#     sheet_ind = "Table 3"
-#     num_comp_sequences = 1 # 2 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 3
+    sheet_ind = "Table 3"
+    num_comp_sequences = 1 # 2 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 4
-#     sheet_ind = "Table 4"
-#     num_comp_sequences = 1 # 2 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 4
+    sheet_ind = "Table 4"
+    num_comp_sequences = 1 # 2 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 5
-#     sheet_ind = "Table 5"
-#     num_comp_sequences = 1 # 2 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 5
+    sheet_ind = "Table 5"
+    num_comp_sequences = 1 # 2 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 6
-#     sheet_ind = "Table 6"
-#     num_comp_sequences = 1 # 3 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 6
+    sheet_ind = "Table 6"
+    num_comp_sequences = 1 # 3 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 7
-#     sheet_ind = "Table 7"
-#     num_comp_sequences = 1 # 4 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)   
+        # Table 7
+    sheet_ind = "Table 7"
+    num_comp_sequences = 1 # 4 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data) 
 
-#         # Table 8
-#     sheet_ind = "Table 8"
-#     num_comp_sequences = 1 # 5 compressors
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 8
+    sheet_ind = "Table 8"
+    num_comp_sequences = 1 # 5 compressors
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-# ### 2. DX_Equipment_Data_Collection_L.xlsx
-#     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_L.xlsx"
+### 2. DX_Equipment_Data_Collection_L.xlsx
+    xlsx_file = "./data/processed/DX_Equipment_Data_Collection_L.xlsx"
 
-#     ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
-#         # Table 1
-#     sheet_ind = "Table 1"
-#     num_comp_sequences = 1 # 1 compressor
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
+        # Table 1
+    sheet_ind = "Table 1"
+    num_comp_sequences = 1 # 1 compressor
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 2
-#     sheet_ind = "Table 2"
-#     num_comp_sequences = 3
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 2
+    sheet_ind = "Table 2"
+    num_comp_sequences = 3
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 3
-#     sheet_ind = "Table 3"
-#     num_comp_sequences = 3
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 3
+    sheet_ind = "Table 3"
+    num_comp_sequences = 3
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 4
-#     sheet_ind = "Table 4"
-#     num_comp_sequences = 4
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 4
+    sheet_ind = "Table 4"
+    num_comp_sequences = 4
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 5
-#     sheet_ind = "Table 5"
-#     num_comp_sequences = 4
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 5
+    sheet_ind = "Table 5"
+    num_comp_sequences = 4
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 6
-#     sheet_ind = "Table 6"
-#     num_comp_sequences = 4
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 6
+    sheet_ind = "Table 6"
+    num_comp_sequences = 4
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 7
-#     sheet_ind = "Table 7"
-#     num_comp_sequences = 2
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 7
+    sheet_ind = "Table 7"
+    num_comp_sequences = 2
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 8
-#     sheet_ind = "Table 8"
-#     num_comp_sequences = 2
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 8
+    sheet_ind = "Table 8"
+    num_comp_sequences = 2
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 9
-#     sheet_ind = "Table 9"
-#     num_comp_sequences = 2
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 9
+    sheet_ind = "Table 9"
+    num_comp_sequences = 2
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-#         # Table 10
-#     sheet_ind = "Table 10"
-#     num_comp_sequences = 2
-#     run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 10
+    sheet_ind = "Table 10"
+    num_comp_sequences = 2
+    json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    json_list.append(json_data)
 
-# ### 3. DX_Equipment_Data_Collection_C_SM.xlsx
-#     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_C_SM.xlsx"
+### 3. DX_Equipment_Data_Collection_C_SM.xlsx
+    xlsx_file = "./data/processed/DX_Equipment_Data_Collection_C_SM.xlsx"
 
-#     ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
-#         # Table 1-8, 10
-#     sheet_inds = ["Table 1","Table 2","Table 3","Table 4","Table 5","Table 6","Table 7","Table 8","Table 10"]
-#     for sheet_ind in sheet_inds:
-#         num_comp_sequences = 1 # 1 compressor
-#         run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+    ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
+        # Table 1-8, 10
+    sheet_inds = ["Table 1","Table 2","Table 3","Table 4","Table 5","Table 6","Table 7","Table 8","Table 10"]
+    # json_list = []
+    for sheet_ind in sheet_inds:
+        num_comp_sequences = 1 # 1 compressor
+        json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        json_list.append(json_data)
     
-#         # Table 9, 11-18
-#     sheet_inds = ["Table 9","Table 11","Table 12","Table 13","Table 14","Table 15","Table 16","Table 17","Table 18",]
-#     for sheet_ind in sheet_inds:
-#         num_comp_sequences = 2
-#         run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        # Table 9, 11-18
+    sheet_inds = ["Table 9","Table 11","Table 12","Table 13","Table 14","Table 15","Table 16","Table 17","Table 18",]
+    for sheet_ind in sheet_inds:
+        num_comp_sequences = 2
+        json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
+        json_list.append(json_data)
 
 ### 4. DX_Equipment_Data_Collection_C_SubCool.xlsx
     xlsx_file = "./data/processed/DX_Equipment_Data_Collection_C_SubCool.xlsx"
@@ -444,7 +474,7 @@ if __name__ == "__main__":
     ## manually run to check each table to get 'num_comp_sequences' and 'flow_rate'
         # Table 1-8, 10
     sheet_inds = ["Table 1","Table 2","Table 3","Table 4","Table 5","Table 6","Table 7","Table 8","Table 10"]
-    json_list = []
+    # json_list = []
     for sheet_ind in sheet_inds:
         num_comp_sequences = 1 # 1 compressor
         json_data = run_all(xlsx_file,sheet_ind,num_comp_sequences,35)
