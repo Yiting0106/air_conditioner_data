@@ -4,6 +4,22 @@ import matplotlib.pyplot as plt
 import os
 import json
 
+## Q1: AHRI rating conditions for chillers and DX Equipements
+    # Chillers: outdoor coil entering dry bulb, indoor coil entering wet bulb, air flow
+                # 80 F,  67 F, 1.1(?)
+    # DX Equip: *indoor* coil entering dry bulb, indoor coil entering wet bulb, *outdoor coil entering dry bulb*
+                # 80 F, 67 F, 95 F
+
+## Q2: modify scripts 
+    # Method 1:
+        # still use air flow
+        # see "explore_data_cfm" and "figures"
+    # Method 2:
+        # as described above, outdoor enter dry --> indoor enter dry; air flow --> OAT
+        # see "explore_data_oat" and "figures_OAT"
+
+
+
 
 class DXPerfMap:
 
