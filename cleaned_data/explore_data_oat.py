@@ -250,8 +250,6 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,rated_To_db):
                   "condenser_type": "air",
                   "compressor_speed": compressor_speed,
                   "sim_engine": "energyplus"
-                  # To Do ? :
-                  # 'OAT': 'outdoor_coil_entering_dry_bulb_temperature'
                   # 'gross_sensible_capacity'
                   # 'gross_power'
                   # 'indoor_coil_air_mass_flow_rate'
