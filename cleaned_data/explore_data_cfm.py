@@ -22,7 +22,7 @@ class DXPerfMap:
 
         self.df = self.load_xlsx()
         self.Te_db, self.Te_wb = self.load_AHRI_conditions()
-        self.df_rated, self.rated_capacity, self.df_rated_T, self.df_rated_flow = self.get_rated_conditions(self.df)
+        self.df_rated, self.rated_capacity, self.rated_sensible_capacity, self.df_rated_T, self.df_rated_flow = self.get_rated_conditions(self.df)
 
     def load_xlsx(self):
         df = pd.read_excel(io=self.xlsx_file, sheet_name=self.sheet_ind)
@@ -53,6 +53,7 @@ class DXPerfMap:
         min_idx = np.argmin(dist)
         df_rated = self.df.iloc[min_idx]
         rated_capacity = df_rated["gross_total_capacity"]
+        rated_sensible_capacity = df_rated["gross_sensible_capacity"]
         # get rated capacity
         self.df["cap_f_t"] = self.df["gross_total_capacity"]/rated_capacity
         self.df["ff"] = self.df["indoor_coil_air_mass_flow_rate"]/self.rated_flow_rate
@@ -79,7 +80,7 @@ class DXPerfMap:
              ]
                 df_rated_flow[f"comp_seq_{num_comp+1}"] = _df[
                     (np.abs(_df["indoor_coil_air_mass_flow_rate"] - self.rated_flow_rate) < 100)]
-        return df_rated, rated_capacity, df_const_T, df_rated_flow
+        return df_rated, rated_capacity, rated_sensible_capacity, df_const_T, df_rated_flow
 
 
 
@@ -211,12 +212,29 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
                     rated_flow_rate=flow_rate,comp_sequences=num_comp_sequences)
     plot(xlsx_file, sheet_ind)
 
-    equip_data = {'equip_label': xlsx_file[46:-5]+sheet_ind[-1],
+    if xlsx_file[46] == "L" and num_comp_sequences == 1:
+        compressor_speed = "variable"
+    else:
+        compressor_speed = "constant"
+    equip_data = {"eqp_type": "unitary_dx",
+                  'equip_label': xlsx_file[46:-5]+sheet_ind[-1],
                   'num_comp_sequences': num_comp_sequences,
-                  'flow_rate': flow_rate,
-                  'Te_db': DX.Te_db,
-                  'Te_wb': DX.Te_wb,
-                  'rated_capacity': DX.rated_capacity
+                  'ref_flow_rate': flow_rate,
+                  'ref_Te_db': DX.Te_db,
+                  'ref_Te_wb': DX.Te_wb,
+                  'ref_cap': DX.rated_capacity,
+                  'ref_sensible_cap': DX.rated_sensible_capacity,
+                  'ref_cap_unit': 'Btu/h',
+                  "compressor_type": "scroll",
+                  "condenser_type": "air",
+                  "compressor_speed": compressor_speed,
+                  "sim_engine": "energyplus"
+                  # To Do ? :
+                  # 'OAT': 'outdoor_coil_entering_dry_bulb_temperature'
+                  # 'gross_sensible_capacity'
+                  # 'gross_power'
+                  # 'indoor_coil_air_mass_flow_rate'
+                  # 'supply_fan_power'
                   }
     #test ff
     curve_set_data = []
@@ -252,8 +270,8 @@ def run_all(xlsx_file,sheet_ind,num_comp_sequences,flow_rate):
             "coeff2": coef_case1[1],
             "coeff3": coef_case1[2],
             "coeff4": coef_case1[3],
-            "coeff5": 0.0,
-            "coeff6": 0.0,
+            "coeff5": coef_case1[4],
+            "coeff6": coef_case1[5],
             "coeff7": 0.0,
             "coeff8": 0.0,
             "coeff9": 0.0,
